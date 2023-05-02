@@ -2,20 +2,16 @@ import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Cookies from 'js-cookie';
-import { toast, ToastContainer } from 'react-toastify';
+import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   DotsVerticalIcon,
   XCircleIcon,
   MenuIcon,
-  SunIcon,
-  MoonIcon,
   SearchIcon,
 } from '@heroicons/react/outline';
 import Head from 'next/head';
 import { Store } from '../utils/Store';
-import axios from 'axios';
-import { getError } from '../utils/error';
 import { Menu } from '@headlessui/react';
 import DropdownLink from './DropdownLink';
 import { useRouter } from 'next/router';
@@ -24,7 +20,7 @@ export default function Layout({ children, title }) {
   const router = useRouter();
   const { status, data: session } = useSession();
   const { state, dispatch } = useContext(Store);
-  const { darkMode, cart } = state;
+  const { cart } = state;
   const [isOpen, setIsOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const toggle = () => {

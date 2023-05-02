@@ -17,18 +17,16 @@ const PostCard = ({ post }) => (
     </div>
 
     <h1 className="transition duration-700 text-center mb-8 cursor-pointer hover:text-pink-600 text-3xl font-semibold">
-      <Link href={`/post/${post.slug}`}>{post.name}</Link>
+      <Link href={`/post/${post.slug}`} passHref > {post.name} </Link>
     </h1>
     <div className="block lg:flex text-center items-center justify-center mb-8 w-full">
       <div className="flex items-center justify-center mb-4 lg:mb-0 w-full lg:w-auto mr-8 items-center">
         <Image
           unoptimized
-          loader={grpahCMSImageLoader}
-          alt={post.author.name}
           height="30px"
           width="30px"
           className="align-middle rounded-full"
-          src={post.author.photo.url}
+          src={post.image}
         />
         <p className="inline align-middle text-gray-700 ml-2 font-medium text-lg">{post.author.name}</p>
       </div>

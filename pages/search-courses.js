@@ -1,17 +1,16 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
 import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
-import CourseItem from '../components/CourseItem';
+import PostItem from '../components/PostItem';
 import Course from '../models/Course';
 import db from '../utils/db';
 
 const PAGE_SIZE = 2;
 
-const fees = [
+const prices = [
   {
     name: '$1 to $50',
     value: '1-50',
@@ -33,7 +32,7 @@ export default function SearchCourse(props) {
 
   const {
     query = 'all',
-    fee = 'all',
+    price = 'all',
     province = 'all',
     english = 'all',
     accounting = 'all',
@@ -52,11 +51,10 @@ export default function SearchCourse(props) {
     page = 1,
   } = router.query;
 
-  const { courses, countCourses, fees, provinces, englishes, accountings, economicss, businessStudiess, physicalSciencess, mathss,facultys, closingDates, universitys, apsscores, mathsLits, lifeSciencess , agricultures, pages } = props;
+  const { courses, countCourses, provinces, englishes, accountings, economicss, businessStudiess, physicalSciencess, mathss,facultys, closingDates, universitys, apsscores, mathsLits, lifeSciencess , agricultures, pages } = props;
 
   const filterSearch = ({
     page,
-    fee,
     province,
     english,
     accounting,
@@ -81,7 +79,6 @@ export default function SearchCourse(props) {
     if (page) query.page = page;
     if (searchQuery) query.searchQuery = searchQuery;
     if (sort) query.sort = sort;
-    if (fee) query.fee = fee;
     if (province) query.province = province;
     if (english) query.english = english;
     if (accounting) query.accounting = accounting;
@@ -111,8 +108,8 @@ export default function SearchCourse(props) {
   const pageHandler = (page) => {
     filterSearch({ page });
   };
-  const feeHandler = (e) => {
-    filterSearch({ fee: e.target.value });
+  const priceHandler = (e) => {
+    filterSearch({ price: e.target.value });
   };
   const sortHandler = (e) => {
     filterSearch({ sort: e.target.value });
@@ -173,8 +170,6 @@ export default function SearchCourse(props) {
     <Layout title="SA Course Search">
       <div className="grid md:grid-cols-4 md:gap-5">
         <div>
-
-
           <div className="my-3">
             <h2>Province</h2>
             <select
@@ -367,9 +362,9 @@ export default function SearchCourse(props) {
 
           <div className="mb-3">
             <h2> Course Fees</h2>
-            <select className="w-full" value={fee} onChange={feeHandler}>
+            <select className="w-full" value={price} onChange={priceHandler}>
               <option value="all">All</option>
-              {fees &&
+              {prices &&
                 fees.map((price) => (
                   <option key={price.value} value={price.value}>
                     {price.name}
@@ -407,7 +402,7 @@ export default function SearchCourse(props) {
         <div className="md:col-span-3">
           <div className="mb-2 flex items-center justify-between border-b-2 pb-2">
             <div className="flex items-center">
-              {products.length === 0 ? 'No' : countProducts} Results
+              {courses.length === 0 ? 'No' : countCourses} Results
               {query !== 'all' && query !== '' && ' : ' + query}
               {category !== 'all' && ' : ' + category}
               {brand !== 'all' && ' : ' + brand}
@@ -419,7 +414,7 @@ export default function SearchCourse(props) {
               brand !== 'all' ||
               rating !== 'all' ||
               price !== 'all' ? (
-                <button onClick={() => router.push('/search')}>
+                <button onClick={() => router.push('/search-courses')}>
                   <XCircleIcon className="h-5 w-5" />
                 </button>
               ) : null}
@@ -437,16 +432,15 @@ export default function SearchCourse(props) {
           </div>
           <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3  ">
-              {products.map((product) => (
-                <ProductItem
+              {courses.map((product) => (
+                <PostItem
                   key={product._id}
-                  product={product}
-                  addToCartHandler={addToCartHandler}
+                  post={product}
                 />
               ))}
             </div>
             <ul className="flex">
-              {products.length > 0 &&
+              {courses.length > 0 &&
                 [...Array(pages).keys()].map((pageNumber) => (
                   <li key={pageNumber}>
                     <button
@@ -470,7 +464,7 @@ export default function SearchCourse(props) {
 export async function getServerSideProps({ query }) {
   const pageSize = query.pageSize || PAGE_SIZE;
   const page = query.page || 1;
-  const fee = query.fee || '';
+  const price = query.price || '';
   const province = query.province || '';
   const english = query.english || '';
   const accounting = query.accounting || '';
@@ -508,7 +502,7 @@ export async function getServerSideProps({ query }) {
         }
       : {};
   // 10-50
-  const feeFilter =
+  const priceFilter =
     price && price !== 'all'
       ? {
           price: {
@@ -546,7 +540,7 @@ export async function getServerSideProps({ query }) {
                          
 
   await db.connect();
-  const fees = await Course.find().distinct('fee');
+  const prices = await Course.find().distinct('price');
   const provinces = await Course.find().distinct('province');
   const englishes = await Course.find().distinct('english');
   const accountings = await Course.find().distinct('accounting');
@@ -566,7 +560,7 @@ export async function getServerSideProps({ query }) {
     {
       ...queryFilter,
       ...provinceFilter,
-      ...feeFilter,
+      ...priceFilter,
       ...englishFilter,
       ...accountingFilter,
       ...economicsFilter,
@@ -591,7 +585,7 @@ export async function getServerSideProps({ query }) {
   const countCourses = await Course.countDocuments({
     ...queryFilter,
       ...provinceFilter,
-      ...feeFilter,
+      ...priceFilter,
       ...englishFilter,
       ...accountingFilter,
       ...economicsFilter,
@@ -615,7 +609,7 @@ export async function getServerSideProps({ query }) {
       courses,
       countCourses,
       page,
-      fees,
+      prices,
       provinces,
       englishes,
       accountings,

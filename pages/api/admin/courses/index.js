@@ -36,7 +36,6 @@ const postHandler = async (req, res) => {
     maths: 0,
     mathsLit: 0,
     apsscore: 0,
-    description: 'sample description',
     faculty: 'sample faculty',
     university: 'sample category',
     location: 'sample brand',
@@ -49,6 +48,7 @@ const postHandler = async (req, res) => {
   await db.disconnect();
   res.send({ message: 'Course created successfully', course });
 };
+
 const getHandler = async (req, res) => {
   await db.connect();
   const courses = await Course.find({});

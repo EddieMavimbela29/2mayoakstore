@@ -1,8 +1,8 @@
 import React from 'react';
+import Image from 'next/image';
 import ReactHtmlParser from 'html-react-parser';
 import DOMPurify from 'isomorphic-dompurify';
 import moment from 'moment';
-import Image from 'next/image';
 
 
 const htmlFrom = (htmlString) => {
@@ -17,14 +17,18 @@ const PostDetail = ({ post }) => {
   const body = post.description;
 
   return (
-    <>
+
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
         <div className="relative overflow-hidden shadow-md mb-6">
-          <img
-            src={post.image}
-            alt={post.name}
-            className="object-top h-full w-full object-cover  shadow-lg rounded-t-lg lg:rounded-lg"
-          />
+          
+          <Image
+                src={post.image}
+                alt={post.name}
+                height="40px"
+                width="80px"
+                layout="responsive"
+                className="object-top h-full w-full object-cover  shadow-lg rounded-t-lg lg:rounded-lg"
+               ></Image>
         </div>
         <div className="px-4 lg:px-0">
           <div className="flex items-center mb-8 w-full">
@@ -68,7 +72,6 @@ const PostDetail = ({ post }) => {
           </div>
           Description: { htmlFrom(body)}
      </div>
-    </>
   );
 };
 

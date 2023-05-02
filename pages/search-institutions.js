@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
 import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
-import InstitutionItem from '../components/InstitutionItem';
+import PostItem from '../components/PostItem';
 import Institution from '../models/Institution';
 import db from '../utils/db';
 
@@ -35,20 +35,18 @@ export default function InstitutionSearch(props) {
     query = 'all',
     province = 'all',
     type = 'all',
-    location = 'all',
     price = 'all',
     rating = 'all',
     sort = 'featured',
     page = 1,
   } = router.query;
 
-  const { institutions, countInstitutions, locations, types, provinces, pages } = props;
+  const { institutions, countInstitutions, types, provinces, pages } = props;
 
   const filterSearch = ({
     page,
     type,
     province,
-    location,
     sort,
     min,
     max,
@@ -62,8 +60,7 @@ export default function InstitutionSearch(props) {
     if (sort) query.sort = sort;
     if (type) query.type = type;
     if (province) query.province = province;
-    if (location) query.location = location;
-    if (price) query.price = price;
+   if (price) query.price = price;
     if (rating) query.rating = rating;
     if (min) query.min ? query.min : query.min === 0 ? 0 : min;
     if (max) query.max ? query.max : query.max === 0 ? 0 : max;
@@ -79,9 +76,7 @@ export default function InstitutionSearch(props) {
   const pageHandler = (page) => {
     filterSearch({ page });
   };
-  const locationHandler = (e) => {
-    filterSearch({ location: e.target.value });
-  };
+
   const typeHandler = (e) => {
     filterSearch({ type: e.target.value });
   };
@@ -171,8 +166,7 @@ export default function InstitutionSearch(props) {
               {query !== 'all' && query !== '' && ' : ' + query}
               {province !== 'all' && ' : ' + province}
               {type !== 'all' && ' : ' + type}
-              {location !== 'all' && ' : ' + location}
-              {price !== 'all' && ' : Price ' + price}
+             {price !== 'all' && ' : Price ' + price}
               {rating !== 'all' && ' : Rating ' + rating + ' & up'}
               &nbsp;
               {(query !== 'all' && query !== '') ||
@@ -200,9 +194,9 @@ export default function InstitutionSearch(props) {
           <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3  ">
               {institutions.map((product) => (
-                <InstitutionItem
+                <PostItem
                   key={product._id}
-                  institution={product}
+                  post={product}
                 />
               ))}
             </div>
@@ -233,8 +227,7 @@ export async function getServerSideProps({ query }) {
   const page = query.page || 1;
   const province = query.province || '';
   const type = query.type || '';
-  const location = query.location || '';
-  const price = query.price || '';
+ const price = query.price || '';
   const rating = query.rating || '';
   const sort = query.sort || '';
   const searchQuery = query.query || '';
@@ -285,8 +278,7 @@ export async function getServerSideProps({ query }) {
 
   await db.connect();
   const provinces = await Institution.find().distinct('province');
-  const locations = await Institution.find().distinct('location');
-  const types = await Institution.find().distinct('type');
+ const types = await Institution.find().distinct('type');
 
   const institutionDocs = await Institution.find(
     {
@@ -294,7 +286,6 @@ export async function getServerSideProps({ query }) {
     ...provinceFilter,
     ...priceFilter,
     ...typeFilter,
-    ...locationFilter,
     ...ratingFilter
     },
     '-reviews'
@@ -309,7 +300,6 @@ export async function getServerSideProps({ query }) {
     ...provinceFilter,
     ...priceFilter,
     ...typeFilter,
-    ...locationFilter,
     ...ratingFilter
   });
 
@@ -323,7 +313,6 @@ export async function getServerSideProps({ query }) {
       page,
       pages: Math.ceil(countInstitutions / pageSize),
       provinces,
-      locations,
       types
     },
   };

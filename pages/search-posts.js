@@ -1,9 +1,5 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
-import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
 import PostItem from '../components/PostItem';
 import Post from '../models/Post';

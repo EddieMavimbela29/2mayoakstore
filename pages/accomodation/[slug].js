@@ -2,7 +2,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import Layout from '../../components/Layout';
 import PostDetail from '../../components/PostDetail';
 import Ads from '../../components/Ads';
@@ -21,8 +21,8 @@ export default function AccomodationScreen(props) {
     return <Loader />;
   }
 
-  if (!post) {
-    return <Layout title="Accomodation Not Found">Job Not Found</Layout>;
+  if (!accomodation) {
+    return <Layout title="Accomodation Not Found">Accomodation Not Found</Layout>;
   }
 
   return (
@@ -64,8 +64,8 @@ export default function AccomodationScreen(props) {
              <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4"> Provinces</h3>
                    {provinces.map((category, index) => (
-                    <Link key={index} href={`/accomodations/${category.slug}`}>
-                      <span className={`cursor-pointer block ${(index === categories.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
+                    <Link key={index} href={`/accomodations/${category.slug}`} passHref >
+                      <span className={`cursor-pointer block ${(index === provinces.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}
                </div>

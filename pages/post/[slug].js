@@ -2,7 +2,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import Layout from '../../components/Layout';
 import PostDetail from '../../components/PostDetail';
 import Ads from '../../components/Ads';
@@ -56,7 +56,7 @@ export default function PostScreen(props) {
                     </div>
                      <div className="flex-grow ml-4">
                         <p className="text-gray-500 font-xs">{moment(post.createdAt).format('MMM DD, YYYY')}</p>
-                           <Link href={`/post/${post.slug}`} className="text-md" key={index}>{post.name}</Link>
+                           <Link href={`/post/${post.slug}`} className="text-md" key={index} passHref >{post.name}</Link>
                     </div>
                   </div>
                   ))}
@@ -64,7 +64,7 @@ export default function PostScreen(props) {
              <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
                    {categories.map((category, index) => (
-                    <Link key={index} href={`/post/${category.slug}`}>
+                    <Link key={index} href={`/post/${category.slug}`} passHref >
                       <span className={`cursor-pointer block ${(index === categories.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}

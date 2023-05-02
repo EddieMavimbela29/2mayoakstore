@@ -1,9 +1,5 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
-import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
 import JobItem from '../components/JobItem';
 import Job from '../models/Job';
@@ -45,16 +41,13 @@ export default function JobSearch(props) {
     page = 1,
   } = router.query;
 
-  const { jobs, countJobs, categories, provinces, facultys, locations, closingDates, pages } = props;
+  const { jobs, countJobs, categories, provinces, facultys, pages } = props;
 
   const filterSearch = ({
     page,
     category,
     province,
     faculty,
-    company,
-    location,
-    closingDate,
     sort,
     min,
     max,
@@ -69,9 +62,6 @@ export default function JobSearch(props) {
     if (category) query.category = category;
     if (province) query.province = province;
     if (faculty) query.faculty = faculty;
-    if (company) query.company = company;
-    if (location) query.location = location;
-    if (closingDate) query.closingDate = closingDate;
     if (price) query.price = price;
     if (rating) query.rating = rating;
     if (min) query.min ? query.min : query.min === 0 ? 0 : min;
@@ -93,15 +83,6 @@ export default function JobSearch(props) {
   };
   const facultyHandler = (e) => {
     filterSearch({ faculty: e.target.value });
-  };
-  const companyHandler = (e) => {
-    filterSearch({ company: e.target.value });
-  };
-  const locationHandler = (e) => {
-    filterSearch({ location: e.target.value });
-  };
-  const closingDateHandler = (e) => {
-    filterSearch({ closingDate: e.target.value });
   };
   const sortHandler = (e) => {
     filterSearch({ sort: e.target.value });
@@ -190,9 +171,6 @@ export default function JobSearch(props) {
               {category !== 'all' && ' : ' + category}
               {province !== 'all' && ' : ' + province}
               {faculty !== 'all' && ' : ' + faculty}
-              {company !== 'all' && ' : ' + company}
-              {location !== 'all' && ' : ' + location}
-              {closingDate !== 'all' && ' : ' + closingDate}
               {price !== 'all' && ' : Price ' + price}
               {rating !== 'all' && ' : Rating ' + rating + ' & up'}
               &nbsp;
@@ -200,9 +178,6 @@ export default function JobSearch(props) {
               category !== 'all' ||
               province !== 'all' ||
               faculty !== 'all' ||
-              company !== 'all' ||
-              location !== 'all' ||
-              closingDate !== 'all' ||
               rating !== 'all' ||
               price !== 'all' ? (
                 <button onClick={() => router.push('/search-jobs')}>
@@ -258,9 +233,6 @@ export async function getServerSideProps({ query }) {
   const category = query.category || '';
   const province = query.province || '';
   const faculty = query.faculty || '';
-  const company = query.company || '';
-  const location = query.location || '';
-  const closingDate = query.closingDate || '';
   const price = query.price || '';
   const rating = query.rating || '';
   const sort = query.sort || '';
@@ -278,10 +250,7 @@ export async function getServerSideProps({ query }) {
   const categoryFilter = category && category !== 'all' ? { category } : {};
   const provinceFilter = province && province !== 'all' ? { province } : {};
   const facultyFilter = faculty && faculty !== 'all' ? { faculty } : {};
-  const companyFilter = company && company !== 'all' ? { company } : {};
-  const locationFilter = location && location !== 'all' ? { location } : {};
-  const closingDateFilter = closingDate && closingDate !== 'all' ? { closingDate } : {};
-  
+ 
   const ratingFilter =
     rating && rating !== 'all'
       ? {
@@ -317,10 +286,6 @@ export async function getServerSideProps({ query }) {
   const categories = await Job.find().distinct('category');
   const provinces = await Job.find().distinct('province');
   const facultys = await Job.find().distinct('faculty');
-  const companys = await Job.find().distinct('company');
-  const locations = await Job.find().distinct('location');
-  const closingDates = await Job.find().distinct('closingDate');
-
   const jobDocs = await Job.find(
     {
       ...queryFilter,
@@ -328,9 +293,6 @@ export async function getServerSideProps({ query }) {
       ...priceFilter,
       ...provinceFilter,
       ...facultyFilter,
-      ...companyFilter,
-      ...locationFilter,
-      ...closingDateFilter,
       ...ratingFilter,
     },
     '-reviews'
@@ -346,9 +308,6 @@ export async function getServerSideProps({ query }) {
       ...priceFilter,
       ...provinceFilter,
       ...facultyFilter,
-      ...companyFilter,
-      ...locationFilter,
-      ...closingDateFilter,
       ...ratingFilter,
   });
 
@@ -363,10 +322,7 @@ export async function getServerSideProps({ query }) {
       pages: Math.ceil(countJobs / pageSize),
       categories,
       provinces,
-      facultys,
-      companys,
-      locations,
-      closingDates
+      facultys
     },
   };
 }

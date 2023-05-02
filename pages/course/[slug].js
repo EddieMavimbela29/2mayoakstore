@@ -2,7 +2,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import Layout from '../../components/Layout';
 import PostDetail from '../../components/PostDetail';
 import Ads from '../../components/Ads';
@@ -21,8 +21,8 @@ export default function CourseScreen(props) {
     return <Loader />;
   }
 
-  if (!post) {
-    return <Layout title="Post Not Found">Course Not Found</Layout>;
+  if (!course) {
+    return <Layout title="Course Not Found">Course Not Found</Layout>;
   }
 
   return (
@@ -64,17 +64,17 @@ export default function CourseScreen(props) {
              <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
                    {categories.map((category, index) => (
-                    <Link key={index} href={`/courses/${category.slug}`}>
+                    <Link key={index} href={`/courses/${category.slug}`} passHref >
                       <span className={`cursor-pointer block ${(index === categories.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}
                </div>
               <Ads />
               <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
-                 <h3 className="text-xl mb-8 font-semibold border-b pb-4">Categories</h3>
+                 <h3 className="text-xl mb-8 font-semibold border-b pb-4">Faculties</h3>
                    {faculties.map((category, index) => (
-                    <Link key={index} href={`/courses/${category.slug}`}>
-                      <span className={`cursor-pointer block ${(index === categories.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
+                    <Link key={index} href={`/courses/${category.slug}`} passHref >
+                      <span className={`cursor-pointer block ${(index === faculties.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}
                </div>

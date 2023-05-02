@@ -2,7 +2,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import Layout from '../../components/Layout';
 import PostDetail from '../../components/PostDetail';
 import Ads from '../../components/Ads';
@@ -56,7 +56,7 @@ export default function JobScreen(props) {
                     </div>
                      <div className="flex-grow ml-4">
                         <p className="text-gray-500 font-xs">{moment(job.createdAt).format('MMM DD, YYYY')}</p>
-                           <Link href={`/jobs/${job.slug}`} className="text-md" key={index}>{job.name}</Link>
+                           <Link href={`/jobs/${job.slug}`} className="text-md" key={index} passHref >{job.name}</Link>
                     </div>
                   </div>
                   ))}
@@ -64,7 +64,7 @@ export default function JobScreen(props) {
              <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4"> Job Categories</h3>
                    {categories.map((category, index) => (
-                    <Link key={index} href={`/jobs/${category.slug}`}>
+                    <Link key={index} href={`/jobs/${category.slug}`} passHref >
                       <span className={`cursor-pointer block ${(index === categories.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}
@@ -73,7 +73,7 @@ export default function JobScreen(props) {
               <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4">Faculties</h3>
                    {faculties.map((category, index) => (
-                    <Link key={index} href={`/jobs/${category.slug}`}>
+                    <Link key={index} href={`/jobs/${category.slug}`} passHref >
                       <span className={`cursor-pointer block ${(index === faculties.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}
@@ -82,7 +82,7 @@ export default function JobScreen(props) {
               <div className="bg-white shadow-lg rounded-lg p-8 pb-12 mb-8">
                  <h3 className="text-xl mb-8 font-semibold border-b pb-4">Provinces</h3>
                    {provinces.map((category, index) => (
-                    <Link key={index} href={`/jobs/${category.slug}`}>
+                    <Link key={index} href={`/jobs/${category.slug}`} passHref >
                       <span className={`cursor-pointer block ${(index === provinces.length - 1) ? 'border-b-0' : 'border-b'} pb-3 mb-3`}>{category}</span>
                     </Link>
                    ))}

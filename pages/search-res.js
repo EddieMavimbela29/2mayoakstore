@@ -1,11 +1,8 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { toast } from 'react-toastify';
+import React from 'react';
 import Layout from '../components/Layout';
-import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
-import InstitutionItem from '../components/InstitutionItem';
+import PostItem from '../components/PostItem';
 import Accomodation from '../models/Ress';
 import db from '../utils/db';
 
@@ -28,7 +25,7 @@ const prices = [
 
 const ratings = [1, 2, 3, 4, 5];
 
-export default function InstitutionSearch(props) {
+export default function AccomodationSearch(props) {
   const router = useRouter();
 
   const {
@@ -200,9 +197,9 @@ export default function InstitutionSearch(props) {
           <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3  ">
               {accomodations.map((product) => (
-                <AccomodationItem
+                <PostItem
                   key={product._id}
-                  institution={product}
+                  post={product}
                 />
               ))}
             </div>
