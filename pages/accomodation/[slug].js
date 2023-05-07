@@ -13,7 +13,7 @@ import db from '../../utils/db';
 
 export default function AccomodationScreen(props) {
 
-  const { accomodation, featuredAccomodations, universities, provinces } = props;
+  const { accomodation, featuredAccomodations, provinces } = props;
  
   const router = useRouter();
 
@@ -56,7 +56,7 @@ export default function AccomodationScreen(props) {
                     </div>
                      <div className="flex-grow ml-4">
                         <p className="text-gray-500 font-xs">{moment(accomodation.createdAt).format('MMM DD, YYYY')}</p>
-                           <Link href={`/accomodations/${accomodation.slug}`} className="text-md" key={index}>{job.name}</Link>
+                           <Link href={`/accomodations/${accomodation.slug}`} className="text-md" key={index}>{accomodation.name}</Link>
                     </div>
                   </div>
                   ))}

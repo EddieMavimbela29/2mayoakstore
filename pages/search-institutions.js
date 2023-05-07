@@ -1,9 +1,6 @@
-import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { toast } from 'react-toastify';
+import React from 'react';
 import Layout from '../components/Layout';
-import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
 import PostItem from '../components/PostItem';
 import Institution from '../models/Institution';
@@ -123,18 +120,6 @@ export default function InstitutionSearch(props) {
             </select>
           </div>
           <div className="mb-3">
-            <h2>City</h2>
-            <select className="w-full" value={location} onChange={locationHandler}>
-              <option value="all">All</option>
-              {locations &&
-                locations.map((brand) => (
-                  <option key={brand} value={brand}>
-                    {brand}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="mb-3">
             <h2>Application Fee</h2>
             <select className="w-full" value={price} onChange={priceHandler}>
               <option value="all">All</option>
@@ -171,7 +156,6 @@ export default function InstitutionSearch(props) {
               &nbsp;
               {(query !== 'all' && query !== '') ||
               type !== 'all' ||
-              location !== 'all' ||
               province !== 'all' ||
               rating !== 'all' ||
               price !== 'all' ? (
@@ -243,8 +227,7 @@ export async function getServerSideProps({ query }) {
       : {};
   const provinceFilter = province && province !== 'all' ? { province } : {};
   const typeFilter = type && type !== 'all' ? { type } : {};
-  const locationFilter = location && location !== 'all' ? { location } : {};
-
+ 
   const ratingFilter =
     rating && rating !== 'all'
       ? {

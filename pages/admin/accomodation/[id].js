@@ -351,4 +351,4 @@ export default function AdminAccomodationEditScreen() {
   );
 }
 
-AdminInstitutionEditScreen.auth = { adminOnly: true };
+AdminAccomodationEditScreen.auth = { adminOnly: true };

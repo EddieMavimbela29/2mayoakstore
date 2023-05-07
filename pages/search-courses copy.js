@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import { useContext } from 'react';
 import Layout from '../components/Layout';
+import { Store } from '../utils/Store';
 import { XCircleIcon } from '@heroicons/react/outline';
 import PostItem from '../components/PostItem';
 import Course from '../models/Course';
@@ -72,7 +73,6 @@ export default function SearchCourse(props) {
     min,
     max,
     searchQuery,
-    price,
     rating,
   }) => {
     const { query } = router;
@@ -93,7 +93,6 @@ export default function SearchCourse(props) {
     if (university) query.university = university;
     if (faculty) query.faculty = faculty;
     if (closingDate) query.closingDate = closingDate;
-    if (price) query.price = price;
     if (rating) query.rating = rating;
     if (min) query.min ? query.min : query.min === 0 ? 0 : min;
     if (max) query.max ? query.max : query.max === 0 ? 0 : max;
@@ -103,9 +102,17 @@ export default function SearchCourse(props) {
       query: query,
     });
   };
-
+  const provinceHandler = (e) => {
+    filterSearch({ province: e.target.value });
+  };
   const pageHandler = (page) => {
     filterSearch({ page });
+  };
+  const priceHandler = (e) => {
+    filterSearch({ price: e.target.value });
+  };
+  const sortHandler = (e) => {
+    filterSearch({ sort: e.target.value });
   };
   const englishHandler = (e) => {
     filterSearch({ english: e.target.value });
@@ -122,6 +129,10 @@ export default function SearchCourse(props) {
   const agricultureHandler = (e) => {
     filterSearch({ agriculture: e.target.value });
   };
+  const ratingHandler = (e) => {
+    filterSearch({ rating: e.target.value });
+  };
+
   const physicalSciencesHandler = (e) => {
     filterSearch({ physicalSciences: e.target.value });
   };
@@ -150,17 +161,6 @@ export default function SearchCourse(props) {
     filterSearch({ closingDate: e.target.value });
   };
 
-  const sortHandler = (e) => {
-    filterSearch({ sort: e.target.value });
-  };
-  const priceHandler = (e) => {
-    filterSearch({ price: e.target.value });
-  };
-  const ratingHandler = (e) => {
-    filterSearch({ rating: e.target.value });
-  };
-
- 
   return (
     <Layout title="SA Course Search">
       <div className="grid md:grid-cols-4 md:gap-5">
@@ -282,7 +282,7 @@ export default function SearchCourse(props) {
                 ))}
             </select>
           </div>
-
+          
           <div className="my-3">
             <h2>Pure Maths</h2>
             <select
@@ -354,6 +354,20 @@ export default function SearchCourse(props) {
             </select>
           </div>
 
+
+          <div className="mb-3">
+            <h2> Course Fees</h2>
+            <select className="w-full" value={price} onChange={priceHandler}>
+              <option value="all">All</option>
+              {prices &&
+                prices.map((price) => (
+                  <option key={price.value} value={price.value}>
+                    {price.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           <div className="mb-3">
             <h2> APS Score </h2>
             <select className="w-full" value={apsscore} onChange={apsscoreHandler}>
@@ -368,20 +382,8 @@ export default function SearchCourse(props) {
           </div>
 
           <div className="mb-3">
-            <h2>Prices</h2>
-            <select className="w-full" value={price} onChange={priceHandler}>
-              <option value="all">All</option>
-              {prices &&
-                prices.map((price) => (
-                  <option key={price.value} value={price.value}>
-                    {price.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="mb-3">
             <h2>Ratings</h2>
-            <select className="w-full" value={rating} onChange={ratingHandler}>
+            <select className="w-full" value={ratings} onChange={ratingHandler}>
               <option value="all">All</option>
               {ratings &&
                 ratings.map((rating) => (
@@ -397,13 +399,12 @@ export default function SearchCourse(props) {
             <div className="flex items-center">
               {courses.length === 0 ? 'No' : countCourses} Results
               {query !== 'all' && query !== '' && ' : ' + query}
-              {faculty !== 'all' && ' : ' + faculty}
-              {province !== 'all' && ' : ' + province}
+              {category !== 'all' && ' : ' + category}
+              {brand !== 'all' && ' : ' + brand}
               {price !== 'all' && ' : Price ' + price}
               {rating !== 'all' && ' : Rating ' + rating + ' & up'}
               &nbsp;
               {(query !== 'all' && query !== '') ||
-              province !== 'all' ||
               category !== 'all' ||
               brand !== 'all' ||
               rating !== 'all' ||
@@ -426,7 +427,7 @@ export default function SearchCourse(props) {
           </div>
           <div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3  ">
-            {courses.map((product) => (
+              {courses.map((product) => (
                 <PostItem
                   key={product._id}
                   post={product}
@@ -458,6 +459,7 @@ export default function SearchCourse(props) {
 export async function getServerSideProps({ query }) {
   const pageSize = query.pageSize || PAGE_SIZE;
   const page = query.page || 1;
+  const price = query.price || '';
   const province = query.province || '';
   const english = query.english || '';
   const accounting = query.accounting || '';
@@ -474,10 +476,8 @@ export async function getServerSideProps({ query }) {
   const university = query.university || '';
   const faculty = query.faculty || '';
   const closingDate = query.closingDate || '';
-  const price = query.price || '';
   const rating = query.rating || '';
   const sort = query.sort || '';
-  const searchQuery = query.query || '';
 
   const queryFilter =
     searchQuery && searchQuery !== 'all'
@@ -488,22 +488,7 @@ export async function getServerSideProps({ query }) {
           },
         }
       : {};
-
- const provinceFilter = province && province !== 'all' ? { province } : {};
-  const englishFilter = english && english !== 'all' ? { english } : {};
-  const accountingFilter = accounting && accounting !== 'all' ? { accounting } : {};
-  const economicsFilter = economics && economics !== 'all' ? { economics } : {};
-  const businessStudiesFilter = businessStudies && businessStudies !== 'all' ? { businessStudies } : {};
-  const agricultureFilter = agriculture && agriculture !== 'all' ? { agriculture } : {};
-  const physicalSciencesFilter = physicalSciences && physicalSciences !== 'all' ? { lifeSciences } : {};
-  const mathsFilter = maths && maths !== 'all' ? { maths } : {};
-  const mathsLitFilter = mathsLit && mathsLit !== 'all' ? { mathsLit } : {};
-  const apsscoreFilter = apsscore && apsscore !== 'all' ? { apsscore } : {};
-  const universityFilter = university && university !== 'all' ? { university } : {};
-  const facultyFilter = faculty && faculty !== 'all' ? { faculty } : {};
-  const closingDateFilter = closingDate && closingDate !== 'all' ? { closingDate } : {};
-   
-  const ratingFilter =
+ const ratingFilter =
     rating && rating !== 'all'
       ? {
           rating: {
@@ -533,9 +518,24 @@ export async function getServerSideProps({ query }) {
       : sort === 'newest'
       ? { createdAt: -1 }
       : { _id: -1 };
-     
+
+      const provinceFilter = province && province !== 'all' ? { province } : {};
+      const englishFilter = english && english !== 'all' ? { english } : {};
+      const accountingFilter = accounting && accounting !== 'all' ? { accounting } : {};
+      const economicsFilter = economics && economics !== 'all' ? { economics } : {};
+      const businessStudiesFilter = businessStudies && businessStudies !== 'all' ? { businessStudies } : {};
+      const agricultureFilter = agriculture && agriculture !== 'all' ? { agriculture } : {};
+      const physicalSciencesFilter = physicalSciences && physicalSciences !== 'all' ? { lifeSciences } : {};
+      const mathsFilter = maths && maths !== 'all' ? { maths } : {};
+      const mathsLitFilter = mathsLit && mathsLit !== 'all' ? { mathsLit } : {};
+      const apsscoreFilter = apsscore && apsscore !== 'all' ? { apsscore } : {};
+      const universityFilter = university && university !== 'all' ? { university } : {};
+      const facultyFilter = faculty && faculty !== 'all' ? { faculty } : {};
+      const closingDateFilter = closingDate && closingDate !== 'all' ? { closingDate } : {};
+                         
 
   await db.connect();
+  const prices = await Course.find().distinct('price');
   const provinces = await Course.find().distinct('province');
   const englishes = await Course.find().distinct('english');
   const accountings = await Course.find().distinct('accounting');
@@ -550,7 +550,6 @@ export async function getServerSideProps({ query }) {
   const universitys = await Course.find().distinct('university');
   const facultys = await Course.find().distinct('faculty');
   const closingDates = await Course.find().distinct('closingDate');
-  
   
   const courseDocs = await Course.find(
     {
